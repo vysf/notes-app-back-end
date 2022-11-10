@@ -92,6 +92,13 @@ class NotesService {
     }
   }
 
+  /**
+   * fungsi untuk memverifikasi kepemilikan note
+   * @param {String} id id note
+   * @param {String} owner id owner
+   * @return {null} mengembalikan NotFoundError jika note tidak ditemukan,
+   * mengembalikan AuthorizationError jika note bukan milik owner
+   */
   async verifyNoteOwner(id, owner) {
     const query = {
       text: 'SELECT * FROM notes WHERE id = $1',
@@ -111,6 +118,12 @@ class NotesService {
     }
   }
 
+  /**
+   * fungsi untuk memverifikasi pengaksesan note
+   * @param {Sting} noteId id note milik owner
+   * @param {String} userId id user baik itu owner atau colaborator
+   * @return {null} mengembalikan NotFoundError atau AuthorizationError
+   */
   async verifyNoteAccess(noteId, userId) {
     /*
     - Fungsi ini akan memeriksa hak akses userId terhadap noteId melalui fungsi verifyNoteOwner.

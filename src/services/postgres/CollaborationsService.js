@@ -13,6 +13,12 @@ class CollaborationsService {
     this._pool = new Pool();
   }
 
+  /**
+   * fungsi untuk menambahkan kolaborasi
+   * @param {String}  noteId  id note milik owner
+   * @param {String}  userId  id user yang diajak berkolaborasi
+   * @return  {String}  id colaborasi
+   */
   async addCollaboration(noteId, userId) {
     const id = `collab-${nanoid(16)}`;
 
@@ -30,6 +36,12 @@ class CollaborationsService {
     return result.rows[0].id;
   }
 
+  /**
+   * fungsi untuk menghapus kolaborasi
+   * @param {String}  noteId  id note milik owner
+   * @param {String}  userId  id user yang diajak berkolaborasi
+   * @return  {null}  mengembalikan InvariantError jika gagal
+   */
   async deleteCollaboration(noteId, userId) {
     const query = {
       text: 'DELETE FROM collaborations WHERE note_id = $1 AND user_id = $2 RETURNING id',
@@ -43,6 +55,12 @@ class CollaborationsService {
     }
   }
 
+  /**
+   * fungsi untuk memverifikasi kolaborasi
+   * @param {String}  noteId  id note milik owner
+   * @param {String}  userId  id user yang diajak berkolaborasi
+   * @return  {null}  mengembalikan InvariantError jika gagal
+   */
   async verifyCollaborator(noteId, userId) {
     const query = {
       text: 'SELECT * FROM collaborations WHERE note_id = $1 AND user_id = $2',
