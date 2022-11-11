@@ -1,3 +1,7 @@
+# optional
+notes-api-web-server.pem
+src/api/uploads/file
+
 # Logs
 logs
 *.log

@@ -1,32 +1,30 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable indent */
 /* eslint-disable no-underscore-dangle */
 const ClientError = require('../../exceptions/ClientError');
 
-class ExportsHandler {
+class UploadsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
 
-    this.postExportNotesHandler = this.postExportNotesHandler.bind(this);
+    this.postUploadImageHandler = this.postUploadImageHandler.bind(this);
   }
 
-  async postExportNotesHandler(request, h) {
+  async postUploadImageHandler(request, h) {
     try {
-      this._validator.validateExportNotesPayload(request.payload);
+     const { data } = request.payload;
+     this._validator.validateImageHeaders(data.hapi.headers);
 
-      const message = {
-        userId: request.auth.credentials.id,
-        targetEmail: request.payload.targetEmail,
-      };
+     const filename = await this._service.writeFile(data, data.hapi);
 
-      await this._service.sendMessage('export:notes', JSON.stringify(message));
-
-      const response = h.response({
-        status: 'success',
-        message: 'Permintaan Anda dalam antrean',
-      });
-      response.code(201);
-      return response;
+     const response = h.response({
+      status: 'success',
+      data: {
+        fileLocation: `http://${process.env.HOST}:${process.env.PORT}/upload/images/${filename}`,
+      },
+     }).code(201);
+     return response;
     } catch (error) {
       if (error instanceof ClientError) {
         const response = h.response({
@@ -48,4 +46,4 @@ class ExportsHandler {
   }
 }
 
-module.exports = ExportsHandler;
+module.exports = UploadsHandler;
